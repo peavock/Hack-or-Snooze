@@ -1,6 +1,28 @@
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 
 /**
+ * Class to represent a single story.
+ */
+
+class Story {
+
+  /**
+   * The constructor is designed to take an object for better readability / flexibility
+   * - storyObj: an object that has story properties in it
+   */
+
+  constructor(storyObj) {
+    this.author = storyObj.author;
+    this.title = storyObj.title;
+    this.url = storyObj.url;
+    this.username = storyObj.username;
+    this.storyId = storyObj.storyId;
+    this.createdAt = storyObj.createdAt;
+    this.updatedAt = storyObj.updatedAt;
+  }
+}
+
+/**
  * This class maintains the list of individual Story instances
  *  It also has some methods for fetching, adding, and removing stories
  */
@@ -57,31 +79,7 @@ class StoryList {
     const storyOutput = new Story(response.data.story);
     return storyOutput;
   };
-
-  /*static async addFavoriteStory(user,storyId){
-
-    const username = user.username;
-    const response = await axios.post(`${BASE_URL}/users/${username}/favorites/${storyId}`,{
-      token: user.loginToken
-    });
-
-    return (response);
-  }
-
-  static async deleteFavoriteStory(user,storyId){
-
-    const username = user.username;
-    const response = await axios.delete(`${BASE_URL}/users/${username}/favorites/${storyId}`,{
-      token: user.loginToken
-    });
-
-    return (response);
-  }
-  */
-
-
 }
-
 
 /**
  * The User class to primarily represent the current user.
@@ -216,39 +214,5 @@ class User {
 
     )
   }
-
-
-  /*static async deleteFavoriteStory(user, storyId){
-
-    const username = user.username;
-    const response = await axios.delete(`${BASE_URL}/users/${username}/favorites/${storyId}`,{
-      token: user.loginToken
-    });
-
-    //return (response);
-  }*/
-
-
 }
 
-/**
- * Class to represent a single story.
- */
-
-class Story {
-
-  /**
-   * The constructor is designed to take an object for better readability / flexibility
-   * - storyObj: an object that has story properties in it
-   */
-
-  constructor(storyObj) {
-    this.author = storyObj.author;
-    this.title = storyObj.title;
-    this.url = storyObj.url;
-    this.username = storyObj.username;
-    this.storyId = storyObj.storyId;
-    this.createdAt = storyObj.createdAt;
-    this.updatedAt = storyObj.updatedAt;
-  }
-}

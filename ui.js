@@ -11,11 +11,9 @@ $(async function() {
   const $navLogOut = $("#nav-logout");
   const $navWelcome = $("#nav-welcome");
   const $navDirectory = $("#nav-directory");
-  //const $navUserProfile = $("nav-user-profile");
   const $submitLink = $("#submit-link");
   const $myStoriesLink = $("#mystories-link");
   const $favoritesLink = $("#favorites-link");
-  //86const $createStoryForm = $("#create-story-form");
 
   // global storyList variable
   let storyList = null;
@@ -24,6 +22,7 @@ $(async function() {
   let currentUser = null;
 
   await checkIfLoggedIn();
+
 
   async function checkIfLoggedIn() {
     // let's see if we're logged in
@@ -129,9 +128,6 @@ $(async function() {
     // show the stories
     $allStoriesList.show();
 
-    //show the create story form
-    //$submitForm.show();
-
     // update the navigation bar
     showNavForLoggedInUser();
   }
@@ -141,24 +137,23 @@ $(async function() {
    * 
    */
   function showNavForLoggedInUser() {
-    //86console.log(currentUser.username)
     $navLogin.hide();
     $navDirectory.show();
     $navWelcome.text(currentUser.username)
-    //$navUserProfile.text(currentUser.username)
-    //$navUserProfile.show();
     $navWelcome.show();
     $navLogOut.show();
   }
 
-  //submitlink on click - show submit form
+  //submitStorylink on click - show submit form
   $submitLink.on("click",function(){
     $submitForm.toggle("hidden");
   })
 
+  //submit story form on submit - submit story and update story list / regenerate
   $submitForm.on("submit",async function(evt){
     evt.preventDefault();
- 
+    
+    //grab the info for the new story
     const newStory = {
       author : $("#author").val(),
       title : $("#title").val(),
@@ -166,19 +161,17 @@ $(async function() {
       //username : currentUser.username,
     }
     
+    //call the function addStory to add it to the API
     await storyList.addStory(currentUser, newStory);
-    /*86 //console.log(storyObject)
-    const result = generateStoryHTML(storyObject);
-    $allStoriesList.append(result);
-
-    storyList.stories.push(result);
-    */
+   
     $submitForm.hide();
 
+    //reset the submit form values
     $("#author").val("");
     $("#title").val("");
     $("#url").val("");
 
+    //rebuild the stories list with your new story
     await generateStories();
     $allStoriesList.show();
   })
@@ -186,11 +179,11 @@ $(async function() {
   $favoritesLink.on("click",async function(){
     hideElements();
     $favoritedArticles.show();
-    //$submitForm.hide();
-    //$allStoriesList.hide();
 
+    //get a fresh user with new user.favorites
     await checkIfLoggedIn();
     
+    //get the current users favorite stories
     let storyList = currentUser.favorites;
     $favoritedArticles.empty();
 
@@ -203,27 +196,9 @@ $(async function() {
 
   $myStoriesLink.on("click",async function(){
     await generateMyStories();
-    /*hideElements();
-    $ownStories.show();
-    //$submitForm.hide();
-    //$allStoriesList.hide();
-
-    await checkIfLoggedIn();
-
-    let storyList = currentUser.ownStories;
-    $ownStories.empty();
-
-    // loop through all of our stories and generate HTML for them
-    for (let story of storyList) {
-      const result = generateStoryHTML(story);
-      const trashCan = document.createElement('span');
-      trashCan.innerHTML ="<span class='trash-can'><i class='fa fa-trash'></i></span>"
-      result.prepend(trashCan);
-      $ownStories.append(result);
-    }*/
   })
 
-  //get my stories and add a trash can to them
+  //get my stories, add a trash can to them, and append them to my stories area
   async function generateMyStories(){
     hideElements();
     $ownStories.show();
@@ -265,15 +240,6 @@ $(async function() {
     await generateStories();
     $allStoriesList.show();
   });
-
-    /**
-   * On page load, checks local storage to see if the user is already logged in.
-   * Renders page information accordingly.
-   */
-
-  
-
- 
 
   /**
    * A rendering function to call the StoryList.getStories static method,
@@ -375,23 +341,6 @@ $(async function() {
     await generateMyStories();
   })
 
-
-  /**$('body').on("click","#episodes",async function(e){
-  let showID = $(e.target).closest(".Show").data("show-id");
-  console.log(showID);
-  
-  let $episodesArea = $("#episodes-area")
-  $episodesArea.show();
-  
-  let episodesList = await getEpisodes(showID)
- 
-  for (episode of episodesList){
-    let $newEpisode = $(`<ul><b>${episode.name}</b> (season ${episode.season} number ${episode.number})</ul>`)
-    $episodesArea.append($newEpisode)
-  }
-  }) */
-
-
   /* hide all elements in elementsArr */
 
   function hideElements() {
@@ -406,7 +355,6 @@ $(async function() {
     ];
     elementsArr.forEach($elem => $elem.hide());
   }
-
 
   /* simple function to pull the hostname from a URL */
 
@@ -423,30 +371,4 @@ $(async function() {
     return hostName;
   }
 
- /*86 - test old
-  $("body").on("dblclick",function(){
-    console.log(currentUser.favorites);
-    let testStoryId = "36accc8e-2343-428a-a0ef-7d40ffc2aabe";
-    const favoriteStories = currentUser.favorites;
-    const favoriteStoryIds = favoriteStories.map(function(id){
-      return id.storyId
-    })
-    console.log(favoriteStoryIds)
-    if (favoriteStoryIds.includes(testStoryId)){
-      console.log("fas")
-    } else{
-      console.log("nope")
-    }
-  })
-  */
-  
-
 });
-
-
-
-
-/*
-let removeItem = $("li").eq(0);
-
-*/
